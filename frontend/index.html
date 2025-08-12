@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - TC Panel</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="css/style.css" rel="stylesheet">
+  <link rel="icon" href="assets/logo.png">
+</head>
+<body>
+  <div class="login-container">
+    <div class="glass login-form">
+      <div class="text-center mb-4">
+        <img src="assets/logo.png" alt="logo" width="80" class="mb-3">
+        <h4>TC Panel</h4>
+        <p class="text-muted">Login to access the dashboard</p>
+      </div>
+      
+      <div class="alert-container"></div>
+      
+      <form id="login-form">
+        <div class="mb-3">
+          <label for="username" class="form-label">Username</label>
+          <input type="text" class="form-control" id="username" value="admin" required>
+        </div>
+        <div class="mb-3">
+          <label for="password" class="form-label">Password</label>
+          <input type="password" class="form-control" id="password" value="123456" required>
+        </div>
+        <div class="d-grid gap-2">
+          <button type="submit" class="btn btn-primary">Login</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // If already logged in, redirect to dashboard
+      if (auth.isLoggedIn()) {
+        window.location.href = 'dashboard.html';
+      }
+      
+      // Handle login form submission
+      const loginForm = document.getElementById('login-form');
+      if (loginForm) {
+        loginForm.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          
+          const username = document.getElementById('username').value;
+          const password = document.getElementById('password').value;
+          
+          // Show loading state
+          const submitBtn = loginForm.querySelector('button[type="submit"]');
+          const originalBtnText = submitBtn.textContent;
+          submitBtn.textContent = 'Logging in...';
+          submitBtn.disabled = true;
+          
+          // Attempt login
+          const result = await auth.login(username, password);
+          
+          // Reset button
+          submitBtn.textContent = originalBtnText;
+          submitBtn.disabled = false;
+          
+          if (result.success) {
+            window.location.href = 'dashboard.html';
+          } else {
+            ui.showAlert(result.message || 'Login failed');
+          }
+        });
+      }
+    });
+  </script>
+</body>
+</html>
